@@ -55,7 +55,8 @@ function showStore(store) {
 
   // Highlight active tab
   tabButtons.forEach(btn => btn.classList.remove("active"));
-  document.querySelector(`.tab-btn[onclick="showStore('${store}')"]`).classList.add("active");
+  const activeBtn = document.querySelector(`.tab-btn[data-store="${store}"]`);
+  if (activeBtn) activeBtn.classList.add("active");
 
   // Change logo with smooth fade
   logo.classList.add("fade-out");
@@ -71,7 +72,7 @@ function showStore(store) {
     .slice(0, 3)
     .map(item => `
       <div class="sale-item">
-        <a href="game.html" class="sale-link">${item}</a>
+        <a href="game.html" class="sale-link" target="_self">${item}</a>
       </div>
     `)
     .join("");
@@ -98,7 +99,7 @@ function toggleMore(store) {
       .slice(3)
       .map(item => `
         <div class="sale-item">
-          <a href="game.html" class="sale-link">${item}</a>
+          <a href="game.html" class="sale-link" target="_self">${item}</a>
         </div>
       `)
       .join("");
@@ -118,16 +119,24 @@ function toggleMore(store) {
 }
 
 // --- Default view ---
-showStore("epic");
+document.addEventListener("DOMContentLoaded", () => {
+  // Setup tab buttons dynamically
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const store = btn.getAttribute("data-store");
+      showStore(store);
+    });
+  });
 
-// --- Rotating wide ad banners ---
-const adSets = [
-  { left: "ad1_left.jpg", center: "ad1_center.jpg", right: "ad1_right.jpg" },
-  { left: "ad2_left.jpg", center: "ad2_center.jpg", right: "ad2_right.jpg" },
-  { left: "ad3_left.jpg", center: "ad3_center.jpg", right: "ad3_right.jpg" }
-];
+  showStore("epic");
 
-window.addEventListener("DOMContentLoaded", () => {
+  // --- Rotating wide ad banners ---
+  const adSets = [
+    { left: "ad1_left.jpg", center: "ad1_center.jpg", right: "ad1_right.jpg" },
+    { left: "ad2_left.jpg", center: "ad2_center.jpg", right: "ad2_right.jpg" },
+    { left: "ad3_left.jpg", center: "ad3_center.jpg", right: "ad3_right.jpg" }
+  ];
+
   const ad = document.querySelector(".ad-frame");
   if (ad && adSets.length > 0) {
     const randomSet = adSets[Math.floor(Math.random() * adSets.length)];
@@ -136,3 +145,5 @@ window.addEventListener("DOMContentLoaded", () => {
     ad.querySelector(".ad-side.right").src = randomSet.right;
   }
 });
+
+
